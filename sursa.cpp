@@ -33,11 +33,8 @@ public:
 		this->addressesCount = 0;
 	}
 	Person(string name, string pin, Date birthday, string* addresses, int addressesCount) :
-		 addressesCount(addressesCount)
+		 name(name), pin(pin), birthday(birthday), addressesCount(addressesCount)
 	{
-		this->name = name;
-		this->pin = pin;
-		this->birthday = birthday;
 		this->addresses = new string[addressesCount];
 		for(int i = 0; i < addressesCount; i++)
 		{
@@ -75,9 +72,6 @@ public:
 		}
 		return* this;
 	}
-	//constr de copiere
-	//op=
-	//destructor
 
 	~Person()
 	{
@@ -112,6 +106,34 @@ public:
 		}
 	}
 
+	Student(const Student& s) : Person(s), regNo(s.regNo), gradesCount(s.gradesCount), 
+		scholarship(s.scholarship)
+	{
+		this->grades = new float[s.gradesCount];
+		for (int i = 0; i < s.gradesCount; i++)
+		{
+			grades[i] = s.grades[i];
+		}
+	}
+
+	Student& operator=(const Student& s)
+	{
+		Person::operator=(s);
+		if (this != &s)
+		{
+			this->regNo = s.regNo;
+			this->gradesCount = s.gradesCount;
+			this->scholarship = s.scholarship;
+
+			delete[] grades;
+			this->grades = new float[s.gradesCount];
+			for (int i = 0; i < s.gradesCount; i++)
+			{
+				grades[i] = s.grades[i];
+			}
+		}
+		return *this;
+	}
 
 	~Student()
 	{
@@ -129,15 +151,48 @@ class University
 
 public:
 	University(string name, string address, Student* students, int studentsCount)
+		: name(name), address(address), studentsCount(studentsCount)
 	{
-		this->name = name;
-		this->address = address;
-		this->studentsCount = studentsCount;
 		this->students = new Student[studentsCount];
 		for (int i = 0; i < studentsCount; i++) //discutie despre shallow copy si constructorul de copiere
+		{
 			this->students[i] = students[i];
+		}
 	}
 
+	University(const University& u) : name(u.name), address(u.address), studentsCount(u.studentsCount)
+	{
+		this->students = new Student[u.studentsCount];
+		for (int i = 0; i < u.studentsCount; i++)
+		{
+			students[i] = u.students[i];
+		}
+	}
+
+	University& operator=(const University& u)
+	{
+		if (this != &u)
+		{
+			this->name = u.name;
+			this->address = u.address;
+			this->studentsCount = u.studentsCount;
+
+			delete[] this->students;
+			
+			this->students = new Student[u.studentsCount];
+			for (int i = 0; i < u.studentsCount; i++)
+			{
+				students[i] = u.students[i];
+			}
+		}
+
+		return *this;
+	}
+
+	~University()
+	{
+		delete[] students;
+	}
 
 };
 
